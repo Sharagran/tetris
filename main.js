@@ -2,8 +2,9 @@
 // https://p5js.org/get-started/
 
 const BLOCK_SIZE = 32;
-
 var game_field = [];
+
+
 
 function setup() {
   createCanvas(800, 800);
@@ -57,8 +58,14 @@ function drawFramerate() {
 class Block {
 
   constructor(type, position) {
-    this.position = createVector(0, 0);
-    this.color = BLOCK_TYPES.type
+    this.position = position;
+
+    this.color = color(BLOCK_TYPES[type].color);
+    this.blocks = [];
+
+    BLOCK_TYPES[type].blocks.forEach(coordinate => {
+      this.blocks.push(createVector(this.position.x, this.position.y).add(coordinate[0], coordinate[1])); // X, Y
+    });
   }
 
   fastDrop() {
@@ -66,15 +73,22 @@ class Block {
   }
 
   moveDown() {
-    this.position.sub(0, 1);
+    this.moveBlocks(0, -1);
   }
 
   moveLeft() {
-    this.position.sub(1, 0);
+    this.moveBlocks(-1, 0);
   }
 
   moveRight() {
-    this.position.add(1, 0);
+    this.moveBlocks(1, 0);
+  }
+
+  moveBlocks(vectorX, vectorY) {
+    this.position.add(vectorX, vectorY);
+    this.blocks.forEach(vector => {
+      vector.add(vectorX, vectorY);
+    });
   }
 
   rotateLeft() {
@@ -90,30 +104,30 @@ class Block {
 const BLOCK_TYPES = {
   'I': {
     color: '#00f0f0',
-    blocks: [[0, 0], [-1, 0], createVector(1, 0), createVector(2, 0)]
+    blocks: [[0, 0], [-1, 0], [1, 0], [2, 0]]
   },
   'J': {
     color: '#0000f0',
-    blocks: [createVector(0, 0), createVector(-1, 0), createVector(-1, 1), createVector(1, 0)]
+    blocks: [[0, 0], [-1, 0], [-1, 1], [1, 0]]
   },
   'L': {
     color: '#f0a000',
-    blocks: [createVector(0, 0), createVector(-1, 0), createVector(1, 0), createVector(1, 1)]
+    blocks: [[0, 0], [-1, 0], [1, 0], [1, 1]]
   },
   'O': {
     color: '#f0f000',
-    blocks: [createVector(0, 0), createVector(0, 1), createVector(1, 0), createVector(1, 1)]
+    blocks: [[0, 0], [0, 1], [1, 0], [1, 1]]
   },
   'S': {
     color: '#00f000',
-    blocks: [createVector(0, 0), createVector(-1, 0), createVector(0, 1), createVector(1, 1)]
+    blocks: [[0, 0], [-1, 0], [0, 1], [1, 1]]
   },
   'T': {
     color: '#a000f0',
-    blocks: [createVector(0, 0), createVector(-1, 0), createVector(0, 1), createVector(1, 0)]
+    blocks: [[0, 0], [-1, 0], [0, 1], [1, 0]]
   }, 
   'Z': {
     color: '#f00000',
-    blocks: [createVector(0, 0), createVector(-1, 1), createVector(0, 1), createVector(1, 1)]
+    blocks: [[0, 0], [-1, 1], [0, 1], [1, 1]]
   }
 };
