@@ -9,7 +9,7 @@ var current_block;
 function setup() {
   createCanvas(800, 800);
   setupGameField();
-  current_block = new Block('L', createVector(5, 10));
+  current_block = new Tetromino('O', createVector(5, 10));
   // frameRate(30);
 }
 
@@ -61,16 +61,16 @@ function drawFramerate() {
   text(`FPS: ${Math.round(frameRate())}`, BLOCK_SIZE * 10 + 20, 20);
 }
 
-class Block {
+class Tetromino {
 
   constructor(type, position) {
-    type = BLOCK_TYPES[type];
+    type = TETROMINOS_TYPES[type];
     this.position = position;
 
-    this.color = color(BLOCKS[type].color);
+    this.color = color(TETROMINOS[type].color);
     this.blocks = [];
 
-    BLOCKS[type].blocks.forEach(coordinate => {
+    TETROMINOS[type].blocks.forEach(coordinate => {
       this.blocks.push(createVector(this.position.x, this.position.y).add(coordinate[0], coordinate[1])); // X, Y
     });
   }
@@ -87,7 +87,7 @@ class Block {
   }
 
   moveDown() {
-    this.moveBlocks(0, -1);
+    this.moveBlocks(0, 1);
   }
 
   moveLeft() {
@@ -115,7 +115,7 @@ class Block {
 
 }
 
-const BLOCK_TYPES = {
+const TETROMINOS_TYPES = {
   I: 0,
   J: 1,
   L: 2,
@@ -124,7 +124,7 @@ const BLOCK_TYPES = {
   T: 5,
   Z: 6,
 };
-const BLOCKS = [
+const TETROMINOS = [
   {
     type: 'I-Block',
     color: '#00f0f0',
@@ -133,12 +133,12 @@ const BLOCKS = [
   {
     type: 'J-Block',
     color: '#0000f0',
-    blocks: [[0, 0], [-1, 0], [-1, 1], [1, 0]]
+    blocks: [[0, 0], [-1, 0], [-1, -1], [1, 0]]
   },
   {
     type: 'L-Block',
     color: '#f0a000',
-    blocks: [[0, 0], [-1, 0], [1, 0], [1, 1]]
+    blocks: [[0, 0], [-1, 0], [1, 0], [1, -1]]
   },
   {
     type: 'O-Block',
@@ -148,7 +148,7 @@ const BLOCKS = [
   {
     type: 'S-Block',
     color: '#00f000',
-    blocks: [[0, 0], [-1, 0], [0, 1], [1, 1]]
+    blocks: [[0, 0], [-1, 1], [0, 1], [1, 0]]
   },
   {
     type: 'T-Block',
@@ -158,6 +158,6 @@ const BLOCKS = [
   {
     type: 'Z-Block',
     color: '#f00000',
-    blocks: [[0, 0], [-1, 1], [0, 1], [1, 1]]
+    blocks: [[0, 0], [-1, 0], [0, 1], [1, 1]]
   }
 ];
