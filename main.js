@@ -9,7 +9,7 @@ var current_block;
 function setup() {
   createCanvas(800, 800);
   setupGameField();
-  current_block = new Tetromino('O', createVector(5, 10));
+  current_block = new Tetromino('T', createVector(5, 10));
   // frameRate(30);
 }
 
@@ -48,17 +48,39 @@ function drawCell(x, y, color) {
   rect(x, y, BLOCK_SIZE, BLOCK_SIZE);
 }
 
-function debugColorGen() {
-  if ( random(0, 100) < 10)
-    return color(random(0, 255), random(0, 255), random(0, 255));
-  else
-    return color(0,0,0);
-}
-
 function drawFramerate() {
   fill(0);
   stroke(0);
   text(`FPS: ${Math.round(frameRate())}`, BLOCK_SIZE * 10 + 20, 20);
+}
+
+
+// ===== Controls =====
+function keyPressed() {
+  switch (keyCode) {
+    case LEFT_ARROW:
+      current_block.moveLeft();
+      return false;
+    case RIGHT_ARROW:
+      current_block.moveRight();
+      return false;
+    case DOWN_ARROW:
+      current_block.softDrop();
+      return false;
+    case UP_ARROW:
+      current_block.rotateRight();
+      return false;
+    case 90:  // Z
+    current_block.rotateLeft();
+    return false;
+    case 32:  //SPACEBAR
+      current_block.hardDrop();
+      return false;
+    case 67:  // C
+      //TODO: insert hold function
+      return false;
+  }
+  return true; // prevent default
 }
 
 class Tetromino {
@@ -82,20 +104,23 @@ class Tetromino {
     });
   }
 
-  fastDrop() {
+  hardDrop() {
 
   }
 
-  moveDown() {
-    this.moveBlocks(0, 1);
+  softDrop() {
+    if (this.collisionCheck(0, 1) == false)
+      this.moveBlocks(0, 1);
   }
 
   moveLeft() {
-    this.moveBlocks(-1, 0);
+    if (this.collisionCheck(-1, 0) == false)
+      this.moveBlocks(-1, 0);
   }
 
   moveRight() {
-    this.moveBlocks(1, 0);
+    if (this.collisionCheck(1, 0) == false)
+      this.moveBlocks(1, 0);
   }
 
   moveBlocks(vectorX, vectorY) {
@@ -105,12 +130,33 @@ class Tetromino {
     });
   }
 
+  collisionCheck(vectorX, vectorY) {
+    var checkResult = false;
+    if (vectorX != 0) {
+      this.blocks.forEach(block => {
+        var newX = block.x + vectorX;
+        if (newX < 0 || newX >= 10)
+          checkResult = true;
+        return;
+      });
+    } else if (vectorY != 0) {
+      this.blocks.forEach(block => {
+        var newY = block.y + vectorY;
+        if (newY >= 20) // || collision with other blocks check
+          checkResult = true;
+        return;
+      });
+    }
+
+    return checkResult;
+  }
+
   rotateLeft() {
 
   }
 
   rotateRight() {
-    
+
   }
 
 }
@@ -154,7 +200,7 @@ const TETROMINOS = [
     type: 'T-Block',
     color: '#a000f0',
     blocks: [[0, 0], [-1, 0], [0, 1], [1, 0]]
-  }, 
+  },
   {
     type: 'Z-Block',
     color: '#f00000',
