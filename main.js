@@ -51,7 +51,7 @@ function drawCell(x, y, color) {
 
 function blockPlaced() {
   checkLines();
-  current_block = new Tetromino('O', createVector(5, 10));
+  current_block = new Tetromino('L', createVector(5, 10));
 }
 
 function checkLines() {
@@ -118,7 +118,6 @@ class Tetromino {
   constructor(type, position) {
     type = TETROMINOS_TYPES[type];
     this.position = position;
-    this.rotation = 0;
 
     this.color = color(TETROMINOS[type].color);
     this.blocks = [];
@@ -135,6 +134,9 @@ class Tetromino {
   }
 
   hardDrop() {
+    while (this.collisionCheck(0, 1) == false) {
+      this.softDrop();
+    }
     this.place();
   }
 
@@ -184,16 +186,25 @@ class Tetromino {
   }
 
   rotateLeft() {
-    this.rotation -= 90;
-    translate(this.position);
-    rotate(this.rotation);
   }
 
   rotateRight() {
     console.log("rotate right");
-    this.rotation += 90;
-    translate(this.position);
-    rotate(this.rotation);
+    this.blocks.forEach(vector => {
+      if(vector.y < this.position.y) {
+        vector.x++;
+        vector.y++;
+      } else if(vector.x > this.position.x) {
+        vector.x--;
+        vector.y++;
+      } else if(vector.y > this.position.y) {
+        vector.x--;
+        vector.y--;
+      } else if(vector.x < this.position.x) {
+        vector.x++;
+        vector.y--;
+      }
+    });
   }
 
   place() {
