@@ -48,8 +48,33 @@ function drawCell(x, y, color) {
   rect(x, y, BLOCK_SIZE, BLOCK_SIZE);
 }
 
-function changeCurrentBlock() {
+function blockPlaced() {
+  checkLines();
   current_block = new Tetromino('O', createVector(5, 10));
+}
+
+function checkLines() {
+  var fullLines = 0;
+  for (let i = 0; i < game_field.length; i++) {
+    const row = game_field[i];
+    var fullLine = true;
+    for (let j = 0; j < row.length; j++) {
+      const element = row[j];
+      if(element == 0) {
+        fullLine = false;
+        break;
+      }
+    }
+
+    if(fullLine) {
+      for (let j = 0; j < row.length; j++) {
+        game_field[i][j] = 0;
+      }
+      fullLines++;
+    }
+  }
+
+  // TODO: calculate SCORE with FULLLINES here
 }
 
 function drawFramerate() {
@@ -167,7 +192,7 @@ class Tetromino {
   place() {
     this.blocks.forEach(block => {
       game_field[block.y][block.x] = this.color;
-      changeCurrentBlock();
+      blockPlaced();
     });
   }
 
