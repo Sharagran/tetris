@@ -138,16 +138,18 @@ class Tetromino {
     if (vectorX != 0) {
       this.blocks.forEach(block => {
         var newX = block.x + vectorX;
-        if (newX < 0 || newX >= 10)
+        if (newX < 0 || newX >= 10 || game_field[block.y][newX] != 0) {
           checkResult = true;
-        return;
+          return;
+        }
       });
     } else if (vectorY != 0) {
       this.blocks.forEach(block => {
         var newY = block.y + vectorY;
-        if (newY >= 20) // || collision with other blocks check
+        if (newY >= 20 || game_field[newY][block.x] != 0) {
           checkResult = true;
-        return;
+          return;
+        }
       });
     }
 
