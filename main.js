@@ -199,6 +199,7 @@ class Tetromino {
   }
 
   // FIXME: fix out of bound rotation
+  // source: https://stackoverflow.com/a/34164786/7264288
   rotateLeft() {
     let transposed = current_block.block_matrix.map((_, colIndex) => current_block.block_matrix.map(row => row[colIndex]));
     current_block.block_matrix = transposed.reverse();
