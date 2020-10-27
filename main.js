@@ -34,10 +34,10 @@ function setupGameField() {
 }
 
 function drawGameField() {
+  stroke(64);
   for (let i = 0; i < game_field[0].length; i++) {
     for (let j = 0; j < game_field.length; j++) {
       let item = game_field[j][i];
-      stroke(64);
       drawCell(i * BLOCK_SIZE, j * BLOCK_SIZE, item);
     }
   }
@@ -46,6 +46,10 @@ function drawGameField() {
 function drawCell(x, y, color) {
   fill(color);
   rect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+}
+
+function changeCurrentBlock() {
+  current_block = new Tetromino('O', createVector(5, 10));
 }
 
 function drawFramerate() {
@@ -99,7 +103,6 @@ class Tetromino {
 
   render() {
     this.blocks.forEach(block => {
-      stroke(this.color);
       drawCell(block.x * BLOCK_SIZE, block.y * BLOCK_SIZE, this.color);
     });
   }
@@ -157,6 +160,13 @@ class Tetromino {
 
   rotateRight() {
 
+  }
+
+  place() {
+    this.blocks.forEach(block => {
+      game_field[block.y][block.x] = this.color;
+      changeCurrentBlock();
+    });
   }
 
 }
