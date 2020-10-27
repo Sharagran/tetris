@@ -128,9 +128,16 @@ class Tetromino {
 
   createBlocks() {
     this.blocks = [];
-    this.block_matrix.forEach(coordinate => {
-      this.blocks.push(createVector(this.position.x, this.position.y).add(coordinate[0], coordinate[1])); // X, Y
-    });
+    for (let i = 0; i < this.block_matrix.length; i++) {
+      const row = this.block_matrix[i];
+      for (let j = 0; j < row.length; j++) {
+        const element = row[j];
+        if(element == 1) {
+          this.blocks.push(createVector(this.position.x + j, this.position.y + i)); // X, Y
+        }
+        
+      }
+    }
   }
 
   render() {
@@ -191,12 +198,21 @@ class Tetromino {
     return checkResult;
   }
 
+  // FIXME: fix out of bound rotation
   rotateLeft() {
+    let transposed = current_block.block_matrix.map((_, colIndex) => current_block.block_matrix.map(row => row[colIndex]));
+    current_block.block_matrix = transposed.reverse();
+    this.createBlocks();
   }
 
   rotateRight() {
-    console.log("rotate right");
-    
+    let transposed = current_block.block_matrix.map((_, colIndex) => current_block.block_matrix.map(row => row[colIndex]));
+    transposed.forEach(element => {
+      element.reverse();
+    });
+
+    current_block.block_matrix = transposed;
+    this.createBlocks();
   }
 
   place() {
@@ -221,36 +237,71 @@ const TETROMINOS = [
   {
     type: 'I-Block',
     color: '#00f0f0',
-    blocks: [[0, 0], [-1, 0], [1, 0], [2, 0]]
+    blocks: [
+      [0,0,0,0],
+      [0,0,0,0],
+      [1,1,1,1],
+      [0,0,0,0]
+  ]
   },
   {
     type: 'J-Block',
     color: '#0000f0',
-    blocks: [[0, 0], [-1, 0], [-1, -1], [1, 0]]
+    blocks: [
+      [0,0,0,0],
+      [1,0,0,0],
+      [1,1,1,1],
+      [0,0,0,0]
+    ]
   },
   {
     type: 'L-Block',
     color: '#f0a000',
-    blocks: [[0, 0], [-1, 0], [1, 0], [1, -1]]
+    blocks: [
+      [0,0,0,0],
+      [0,0,0,1],
+      [1,1,1,1],
+      [0,0,0,0]
+    ]
   },
   {
     type: 'O-Block',
     color: '#f0f000',
-    blocks: [[0, 0], [0, 1], [1, 0], [1, 1]]
+    blocks: [
+      [0,0,0,0],
+      [0,1,1,0],
+      [0,1,1,0],
+      [0,0,0,0]
+    ]
   },
   {
     type: 'S-Block',
     color: '#00f000',
-    blocks: [[0, 0], [-1, 1], [0, 1], [1, 0]]
+    blocks: [
+      [0,0,0,0],
+      [0,0,1,1],
+      [0,1,1,0],
+      [0,0,0,0]
+    ]
   },
   {
     type: 'T-Block',
     color: '#a000f0',
-    blocks: [[0, 0], [-1, 0], [0, 1], [1, 0]]
+    blocks: [
+      [0,0,0,0],
+      [0,0,1,0],
+      [0,1,1,1],
+      [0,0,0,0]
+    ]
   },
   {
     type: 'Z-Block',
     color: '#f00000',
-    blocks: [[0, 0], [-1, 0], [0, 1], [1, 1]]
+    blocks: [
+      [0,0,0,0],
+      [0,1,1,0],
+      [0,0,1,1],
+      [0,0,0,0]
+    ]
   }
 ];
