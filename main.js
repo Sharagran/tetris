@@ -9,6 +9,7 @@ var current_block;
 function setup() {
   createCanvas(800, 800);
   setupGameField();
+  angleMode(DEGREES);
   current_block = new Tetromino('T', createVector(5, 10));
   // frameRate(30);
 }
@@ -38,14 +39,14 @@ function drawGameField() {
   for (let i = 0; i < game_field[0].length; i++) {
     for (let j = 0; j < game_field.length; j++) {
       let item = game_field[j][i];
-      drawCell(i * BLOCK_SIZE, j * BLOCK_SIZE, item);
+      drawCell(i, j, item);
     }
   }
 }
 
 function drawCell(x, y, color) {
   fill(color);
-  rect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+  rect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 }
 
 function blockPlaced() {
@@ -117,6 +118,7 @@ class Tetromino {
   constructor(type, position) {
     type = TETROMINOS_TYPES[type];
     this.position = position;
+    this.rotation = 0;
 
     this.color = color(TETROMINOS[type].color);
     this.blocks = [];
@@ -128,7 +130,7 @@ class Tetromino {
 
   render() {
     this.blocks.forEach(block => {
-      drawCell(block.x * BLOCK_SIZE, block.y * BLOCK_SIZE, this.color);
+      drawCell(block.x, block.y, this.color);
     });
   }
 
@@ -182,11 +184,16 @@ class Tetromino {
   }
 
   rotateLeft() {
-
+    this.rotation -= 90;
+    translate(this.position);
+    rotate(this.rotation);
   }
 
   rotateRight() {
-
+    console.log("rotate right");
+    this.rotation += 90;
+    translate(this.position);
+    rotate(this.rotation);
   }
 
   place() {
