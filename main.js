@@ -116,13 +116,19 @@ function keyPressed() {
 class Tetromino {
 
   constructor(type, position) {
-    type = TETROMINOS_TYPES[type];
+    this.type = TETROMINOS_TYPES[type];
     this.position = position;
+    this.block_matrix = TETROMINOS[this.type].blocks;
 
-    this.color = color(TETROMINOS[type].color);
+    this.color = color(TETROMINOS[this.type].color);
     this.blocks = [];
 
-    TETROMINOS[type].blocks.forEach(coordinate => {
+    this.createBlocks();
+  }
+
+  createBlocks() {
+    this.blocks = [];
+    this.block_matrix.forEach(coordinate => {
       this.blocks.push(createVector(this.position.x, this.position.y).add(coordinate[0], coordinate[1])); // X, Y
     });
   }
@@ -190,21 +196,7 @@ class Tetromino {
 
   rotateRight() {
     console.log("rotate right");
-    this.blocks.forEach(vector => {
-      if(vector.y < this.position.y) {
-        vector.x++;
-        vector.y++;
-      } else if(vector.x > this.position.x) {
-        vector.x--;
-        vector.y++;
-      } else if(vector.y > this.position.y) {
-        vector.x--;
-        vector.y--;
-      } else if(vector.x < this.position.x) {
-        vector.x++;
-        vector.y--;
-      }
-    });
+    
   }
 
   place() {
