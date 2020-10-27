@@ -67,10 +67,10 @@ function checkLines() {
     }
 
     if(fullLine) {
-      for (let j = 0; j < row.length; j++) {
-        game_field[i][j] = 0;
-      }
       fullLines++;
+      // clear line and move everything above 1 down
+      game_field.splice(i, 1);
+      game_field.unshift([0,0,0,0,0,0,0,0,0,0]);
     }
   }
 
@@ -133,7 +133,7 @@ class Tetromino {
   }
 
   hardDrop() {
-
+    this.place();
   }
 
   softDrop() {
