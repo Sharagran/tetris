@@ -10,7 +10,7 @@ function setup() {
   createCanvas(800, 800);
   setupGameField();
   angleMode(DEGREES);
-  current_block = new Tetromino('T', createVector(5, 10));
+  current_block = new Tetromino('T');
   // frameRate(30);
 }
 
@@ -51,7 +51,7 @@ function drawCell(x, y, color) {
 
 function blockPlaced() {
   checkLines();
-  current_block = new Tetromino('L', createVector(5, 10));
+  current_block = new Tetromino('S');
 }
 
 function checkLines() {
@@ -115,9 +115,9 @@ function keyPressed() {
 
 class Tetromino {
 
-  constructor(type, position) {
+  constructor(type) {
     this.type = TETROMINOS_TYPES[type];
-    this.position = position;
+    this.position = createVector(3, -1);
     this.block_matrix = TETROMINOS[this.type].blocks;
 
     this.color = color(TETROMINOS[this.type].color);
@@ -251,7 +251,7 @@ const TETROMINOS = [
     blocks: [
       [0,0,0,0],
       [1,0,0,0],
-      [1,1,1,1],
+      [1,1,1,0],
       [0,0,0,0]
     ]
   },
@@ -260,8 +260,8 @@ const TETROMINOS = [
     color: '#f0a000',
     blocks: [
       [0,0,0,0],
-      [0,0,0,1],
-      [1,1,1,1],
+      [0,0,1,0],
+      [1,1,1,0],
       [0,0,0,0]
     ]
   },
@@ -280,8 +280,8 @@ const TETROMINOS = [
     color: '#00f000',
     blocks: [
       [0,0,0,0],
-      [0,0,1,1],
       [0,1,1,0],
+      [1,1,0,0],
       [0,0,0,0]
     ]
   },
@@ -290,8 +290,8 @@ const TETROMINOS = [
     color: '#a000f0',
     blocks: [
       [0,0,0,0],
-      [0,0,1,0],
-      [0,1,1,1],
+      [0,1,0,0],
+      [1,1,1,0],
       [0,0,0,0]
     ]
   },
@@ -300,8 +300,8 @@ const TETROMINOS = [
     color: '#f00000',
     blocks: [
       [0,0,0,0],
+      [1,1,0,0],
       [0,1,1,0],
-      [0,0,1,1],
       [0,0,0,0]
     ]
   }
