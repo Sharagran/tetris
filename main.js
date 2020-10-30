@@ -6,6 +6,7 @@ var speed = 1;
 var moveTicker;
 
 var game_field = [];
+var piece_bag = [];
 var current_block;
 
 
@@ -56,7 +57,7 @@ function drawCell(x, y, color) {
 
 function blockPlaced() {
   checkLines();
-  current_block = new Tetromino(random(TETROMINOS));
+  current_block = getNewPiece();
 }
 
 function checkLines() {
@@ -94,6 +95,22 @@ function resetMoveTicker() {
   moveTicker = setTimeout(function(){ current_block.softDrop() }, speed * 1000);
 }
 
+function reset7PieceBag() {
+  piece_bag = [];
+  for (let i = 0; i < TETROMINOS.length; i++) {
+    piece_bag.push(i);
+  }
+}
+
+function getNewPiece() {
+  if(piece_bag.length == 0) {
+    reset7PieceBag();
+  }
+  var id = piece_bag.splice(int(random(0, piece_bag.length)), 1);
+  id = id[0];
+  return new Tetromino(id);
+}
+
 // ===== Controls =====
 function keyPressed() {
   switch (keyCode) {
@@ -125,11 +142,11 @@ function keyPressed() {
 
 class Tetromino {
 
-  constructor(t) {
+  constructor(id) {
     this.position = createVector(3, -1);
-    this.block_matrix = t.blocks;
+    this.block_matrix = TETROMINOS[id].blocks;
 
-    this.color = color(t.color);
+    this.color = color(TETROMINOS[id].color);
     this.blocks = [];
 
     this.createBlocks();
@@ -231,8 +248,8 @@ class Tetromino {
   place() {
     this.blocks.forEach(block => {
       game_field[block.y][block.x] = this.color;
-      blockPlaced();
     });
+    blockPlaced();
   }
 
 }
