@@ -2,6 +2,9 @@
 // https://p5js.org/get-started/
 
 const BLOCK_SIZE = 32;
+var speed = 1;
+var moveTicker;
+
 var game_field = [];
 var current_block;
 
@@ -10,7 +13,9 @@ function setup() {
   createCanvas(800, 800);
   setupGameField();
   angleMode(DEGREES);
-  current_block = new Tetromino('T');
+  blockPlaced(); //spawn first block
+  resetMoveTicker();
+
   // frameRate(30);
 }
 
@@ -51,7 +56,7 @@ function drawCell(x, y, color) {
 
 function blockPlaced() {
   checkLines();
-  current_block = new Tetromino('S');
+  current_block = new Tetromino(random(TETROMINOS));
 }
 
 function checkLines() {
@@ -84,6 +89,10 @@ function drawFramerate() {
   text(`FPS: ${Math.round(frameRate())}`, BLOCK_SIZE * 10 + 20, 20);
 }
 
+function resetMoveTicker() {
+  clearTimeout(moveTicker);
+  moveTicker = setTimeout(function(){ current_block.softDrop() }, speed * 1000);
+}
 
 // ===== Controls =====
 function keyPressed() {
@@ -107,6 +116,7 @@ function keyPressed() {
       current_block.hardDrop();
       return false;
     case 67:  // C
+      resetMoveTicker();
       //TODO: insert hold function
       return false;
   }
@@ -115,12 +125,11 @@ function keyPressed() {
 
 class Tetromino {
 
-  constructor(type) {
-    this.type = TETROMINOS_TYPES[type];
+  constructor(t) {
     this.position = createVector(3, -1);
-    this.block_matrix = TETROMINOS[this.type].blocks;
+    this.block_matrix = t.blocks;
 
-    this.color = color(TETROMINOS[this.type].color);
+    this.color = color(t.color);
     this.blocks = [];
 
     this.createBlocks();
@@ -154,8 +163,11 @@ class Tetromino {
   }
 
   softDrop() {
+    resetMoveTicker();
     if (this.collisionCheck(0, 1) == false)
       this.moveBlocks(0, 1);
+    else
+      this.place();
   }
 
   moveLeft() {
@@ -225,15 +237,7 @@ class Tetromino {
 
 }
 
-const TETROMINOS_TYPES = {
-  I: 0,
-  J: 1,
-  L: 2,
-  O: 3,
-  S: 4,
-  T: 5,
-  Z: 6,
-};
+// TODO: fix rotation
 const TETROMINOS = [
   {
     type: 'I-Block',
@@ -289,10 +293,9 @@ const TETROMINOS = [
     type: 'T-Block',
     color: '#a000f0',
     blocks: [
-      [0,0,0,0],
-      [0,1,0,0],
-      [1,1,1,0],
-      [0,0,0,0]
+      [0,0,0],
+      [0,1,0],
+      [1,1,1]
     ]
   },
   {
